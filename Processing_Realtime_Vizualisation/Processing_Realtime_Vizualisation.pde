@@ -42,6 +42,9 @@ int[] RpressValues = new int[gridSize]; // actual pressure data: raw reading - b
 // display setting
 boolean showNumbers = true;
 
+// test setting
+boolean useDummyData = true;
+
 // write to file
 String filename = "norecording.csv";
 boolean isRecording = false;
@@ -57,7 +60,9 @@ void setup() {
   printArray(Serial.list());
   // if needed, change the number in list()[3] below to the appropriate number 
   // of where the Arduino is connected to your computer
-  //arduPort = new Serial(this, Serial.list()[5], 9600);
+  if(!useDummyData){
+    arduPort = new Serial(this, Serial.list()[5], 9600);
+  }
   
   // initiate grid
   size(800,600,P3D);
@@ -84,7 +89,9 @@ void setup() {
 
 /* -------------------------- DRAW -------------------------- */
 void draw() {
-  dummyValuesForTesting();
+  if(useDummyData){
+    dummyValuesForTesting();
+  }
   
   background(255);
   coordinateDraw(); // draw the base grid
@@ -98,17 +105,6 @@ void coordinateDraw(){
   rotateY(-.001);
   background(255);
   translate(0,0,0);
-  
-  /* not needed here
-  // floor plane
-  fill(200);
-  stroke(150);
-  for(int h = 0; h < num_hori; h++){
-    for(int v = 0; v < num_vert; v++){
-      rect(v*cellWidth, h*cellHeight, cellWidth, cellHeight);
-    }  
-  }
-  */
   
   // X axis Right
   stroke(0,100,0); 
@@ -163,16 +159,14 @@ void dataDraw(){
     // Begin loop for rows
     for(int v = 0; v < num_vert; v++){
         
-        // LEFT GRID
-        //LpressValues[readIndex] = LrawValues[readIndex] - Lbaseline[readIndex];
-        
+        // LEFT GRID        
         float LdrawHeight=map(LpressValues[readIndex], 0, 1023, 0, 200);
         float LdrawColor=map(LpressValues[readIndex], 0, 1023, 0, 255);
         
         pushMatrix();
        
-        if(LpressValues[readIndex]<2){
-          // if the value is zero, just make it grey
+        if(LpressValues[readIndex]<3){
+          // if the value is low, make it grey
           fill(200);
         } else {
           // else have a gradient between green to red
@@ -191,16 +185,14 @@ void dataDraw(){
         }
         popMatrix();
       
-        // RIGHT GRID
-        //RpressValues[readIndex] = RrawValues[readIndex] - Rbaseline[readIndex];
-        
+        // RIGHT GRID        
         float RdrawHeight=map(RpressValues[readIndex], 0, 1023, 0, 200);
         float RdrawColor=map(RpressValues[readIndex], 0, 1023, 0, 255);
         
         pushMatrix();
         
-        if(RpressValues[readIndex]<2){
-          // if the value is zero, just make it grey
+        if(RpressValues[readIndex]<3){
+          // if the value is low, make it grey
           fill(200);
         } else {
           // else have a gradient between green to red
@@ -234,14 +226,14 @@ void dummyValuesForTesting(){
   
   // left grid
   for(int i = 0; i < gridSize; i++){
-    receivedMsg = receivedMsg + (second()*2 + i*5) + "x";
+    receivedMsg = receivedMsg + (second() + i*5) + "x";
   }
   
   receivedMsg = receivedMsg + "z";
   
   // right grid
   for(int i = 0; i < gridSize; i++){
-    receivedMsg = receivedMsg + (second()*2 + i*5) + "x";
+    receivedMsg = receivedMsg + (second() + i*5) + "x";
   }
   //println(receivedMsg);
   

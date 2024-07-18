@@ -103,7 +103,7 @@ void coordinateDraw(){
   pushMatrix();
   rotate(-HALF_PI);
   fill(255,0,0);
-  text("Y Axis",-(gridHeight+30),-5,0);
+  text("Y Axis",-(gridHeight+30),-5,-1);
   popMatrix();
 
   // grid line Z axis (up)
@@ -200,12 +200,23 @@ void dataDraw(){
 
 void drawBlank(){
   
+  // instruction
   pushMatrix();
   fill(0);  // text color
   textSize(20);
-  text("Press O to open a saved file.", -200, -60, 0);
-  text("The file has to be in /data/ folder of this Processing file.", -200, -40, 0);
+  text("Press O to open a saved file.", -180, -60, 0);
   popMatrix();
+  
+  // draw empty graph
+  for(int h = 0; h < num_hori; h++){
+    // Begin loop for rows
+    for(int v = 0; v < num_vert; v++){
+      fill(200);
+      stroke(150);  
+      rect(v*cellWidth, h*cellHeight, cellWidth, cellHeight);
+      rect(-v*cellWidth, h*cellHeight, cellWidth, cellHeight);
+    }
+  }
 }
 
 /* --------------------- Keyboard shortcuts ---------------------- */
